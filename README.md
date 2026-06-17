@@ -58,6 +58,5 @@ Your submission will be scored out of 100 points based on:
    ```bash
    dotnet run
    ```
-5. Use the pre-seeded credentials found in `appsettings.json` to generate your initial JWT token via the `/api/auth/login` endpoint.
 
 Good luck!
