@@ -1,4 +1,4 @@
-# Junior .NET Developer Interview Challenge: Secure & AI-Assisted Notification API
+# .NET Developer Interview Challenge: Secure & AI-Assisted Notification API
 
 ## Overview
 Welcome to the interview assignment! You are tasked with completing and securing a backend RESTful Web API for a **Notification Management System** using **.NET 10** and **SQLite**. 

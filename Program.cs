@@ -36,6 +36,13 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// Ensure the database and schema exist
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
+    await db.Database.EnsureCreatedAsync();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
