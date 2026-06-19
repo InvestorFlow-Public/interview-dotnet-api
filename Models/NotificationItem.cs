@@ -21,7 +21,6 @@ namespace interview_dotnet_api.Models
         public bool IsRead { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        // TASK 2: Candidates will need to add a 'Category' property here
+        public string? Category { get; set; }
     }
 }

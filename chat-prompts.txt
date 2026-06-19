@@ -1,0 +1,7 @@
+1. I need to implement a jwt auth in the NotificationController, i was thinking about first creating and endpoint with a post acting as a login
+
+2. generate a lighweight regex/dictionary  categorizer for notifications
+
+3. update the db to have category in the notification model
+
+4. export my prompts from this chat into a txt file in this repository

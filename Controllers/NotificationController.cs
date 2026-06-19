@@ -6,12 +6,16 @@ using interview_dotnet_api.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using interview_dotnet_api.Services;
 
 namespace interview_dotnet_api.Controllers
 {
     [ApiController]
     [Route("api/notifications")]
-    // TASK 1: Missing authentication attribute here
+    [Authorize]
+    
     public class NotificationController : ControllerBase
     {
         private readonly NotificationDbContext _context;
@@ -21,12 +25,15 @@ namespace interview_dotnet_api.Controllers
             _context = context;
         }
 
+
         // GET: api/notifications
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NotificationItem>>> GetNotifications()
         {
-            // VULNERABILITY: Returns all user notifications to any anonymous caller
-            return await _context.Notifications.ToListAsync();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return await _context.Notifications
+                .Where(n => n.UserId == userId)
+                .ToListAsync();
         }
 
         // GET: api/notifications/5
@@ -40,7 +47,12 @@ namespace interview_dotnet_api.Controllers
                 return NotFound();
             }
 
-            // VULNERABILITY: Allows User A to view User B's notifications via ID tampering
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (notification.UserId != userId)
+            {
+                return Forbid();
+            }
+
             return notification;
         }
 
@@ -48,19 +60,16 @@ namespace interview_dotnet_api.Controllers
         [HttpPost]
         public async Task<ActionResult<NotificationItem>> PostNotification(CreateNotificationDto dto)
         {
-            // TASK 1: Needs to extract the logged-in User ID from token claims
-            string fallbackUserId = "unauthenticated-user-id"; 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var notification = new NotificationItem
             {
                 Title = dto.Title,
                 Message = dto.Message,
-                UserId = fallbackUserId,
+                UserId = userId!,
+                Category = NotificationCategorizer.Categorize(dto.Title, dto.Message),
                 CreatedAt = DateTime.UtcNow
             };
-
-            // TASK 2: Trigger AI-Assisted keyword parsing here before database insertion
-            // notification.Category = ...
 
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
@@ -79,7 +88,12 @@ namespace interview_dotnet_api.Controllers
                 return NotFound();
             }
 
-            // VULNERABILITY: Allows unauthorized global modifications
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (notification.UserId != userId)
+            {
+                return Forbid();
+            }
+
             notification.IsRead = true;
             await _context.SaveChangesAsync();
 
@@ -97,7 +111,12 @@ namespace interview_dotnet_api.Controllers
                 return NotFound();
             }
 
-            // VULNERABILITY: Missing ownership verification before execution
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (notification.UserId != userId)
+            {
+                return Forbid();
+            }
+
             _context.Notifications.Remove(notification);
             await _context.SaveChangesAsync();
 

@@ -36,11 +36,11 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Ensure the database and schema exist
+// Apply any pending EF Core migrations
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
-    await db.Database.EnsureCreatedAsync();
+    await db.Database.MigrateAsync();
 }
 
 if (app.Environment.IsDevelopment())
