@@ -7,7 +7,7 @@ To simulate a modern development workflow, **you are encouraged and expected to 
 
 **Repository Name:** `interview-dotnet-api`  
 **C# Namespace:** `interview_dotnet_api`  
-**Time Limit:** 60 Minutes
+**Time Limit:** 60 Minutes (includes 10 Minutes for intial setup)
 
 ---
 
@@ -28,7 +28,7 @@ Use an AI assistant of your choice to implement an automated keyword/channel par
 2. **The AI Constraint**: Write a prompt for your AI assistant to generate a lightweight, regex-based, or dictionary-based classification method in C#. Integration of external paid AI APIs is **not** required—keep the logic local and fast.
 3. **Update Model**: Ensure the `NotificationItem` model handles and saves this new `Category` property to the database.
 
-### Task 3: AI Submission & Review (20 Minutes)
+### Task 3: AI Submission & Review (10 Minutes)
 Document your workflow to demonstrate how you collaborate with AI.
 
 1. Save your AI prompt history. You can export a chat link, take screenshots, or copy-paste the text into a `prompts.txt` file.
@@ -49,12 +49,21 @@ Your submission will be scored out of 100 points based on:
 ## Getting Started
 
 1. Clone this repository or extract the provided ZIP file.
-2. Open the solution in Visual Studio, VS Code, or Rider.
-3. Run the migrations to initialize your local SQLite database:
+2. Open the project:
+   * Visual Studio: open `interview-dotnet-api.sln` (File → Open → Project/Solution). Do *not* use "Open Folder" — open the `.sln` so the project loads with full Solution Explorer and F5 support.
+   * VS Code: open the project folder and install the **C# Dev Kit** extension when prompted.
+   * Rider: open `interview-dotnet-api.sln`.
+3. Verify your machine is ready (recommended before the live session) by running the readiness check from the project root:
+   ```bash
+   ./scripts/check-readiness.sh          # macOS / Linux / WSL / Git Bash
+   pwsh ./scripts/check-readiness.ps1     # Windows PowerShell
+   ```
+   It confirms the .NET 10 SDK, EF Core CLI tools, a build, and that the app starts and serves OpenAPI.
+4. Run the migrations to initialize your local SQLite database:
    ```bash
    dotnet ef database update
    ```
-4. Start the application to access the Swagger/OpenAPI documentation:
+5. Start the application to access the Swagger/OpenAPI documentation:
    ```bash
    dotnet run
    ```

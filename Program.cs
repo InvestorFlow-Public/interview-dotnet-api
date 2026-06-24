@@ -36,10 +36,17 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Ensure the database and schema exist
+// Drop and recreate the database on startup so schema changes are picked up.
+// NOTE: this wipes all data — intended for local/dev only, never production.
+// Skip the wipe under `dotnet watch` so hot-reload restarts keep existing data.
+var isHotReload = Environment.GetEnvironmentVariable("DOTNET_WATCH") == "1";
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
+    if (!isHotReload)
+    {
+        await db.Database.EnsureDeletedAsync();
+    }
     await db.Database.EnsureCreatedAsync();
 }
 
