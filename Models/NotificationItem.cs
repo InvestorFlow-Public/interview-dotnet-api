@@ -22,6 +22,7 @@ namespace interview_dotnet_api.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // TASK 2: Candidates will need to add a 'Category' property here
+        [Required]
+        public string Category { get; set; } = "System";
     }
 }
